@@ -1,0 +1,16 @@
+{
+  "name": "PulseStream Music Player",
+  "short_name": "PulseStream",
+  "description": "Stream music, manage playlists, and background playback player",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06080f",
+  "theme_color": "#06080f",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='128' fill='%236366f1'/%3E%3Cpath d='M192 384V128l256-42v276' stroke='%23fff' stroke-width='48' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Ccircle cx='128' cy='384' r='64' fill='%23fff'/%3E%3Ccircle cx='384' cy='342' r='64' fill='%23fff'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

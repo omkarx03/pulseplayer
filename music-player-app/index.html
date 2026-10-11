@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PulseStream — Music Player</title>
+  <meta name="description" content="Full-featured music streaming player with background playback, equalizer, sleep timer, playlists, and more.">
+  <meta name="theme-color" content="#06080f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="bg-mesh"><div class="mesh-orb o1"></div><div class="mesh-orb o2"></div><div class="mesh-orb o3"></div></div>
+
+  <div id="app">
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <div class="logo-text"><span class="logo-name">PulseStream</span><span class="logo-tag">MUSIC PLAYER</span></div>
+      </div>
+      <div class="sidebar-menu">
+        <div class="menu-label">DISCOVER</div>
+        <button class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span>Home</span></button>
+        <button class="nav-item" data-view="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span>Search</span></button>
+        <button class="nav-item" data-view="trending"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span>Trending</span></button>
+        <button class="nav-item" data-view="genres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Genres</span></button>
+
+        <div class="menu-label">LIBRARY</div>
+        <button class="nav-item" data-view="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg><span>Queue</span><span class="nav-badge" id="queue-badge">0</span></button>
+        <button class="nav-item" data-view="playlists"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15V6"/><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/><path d="M12 12H3"/><path d="M16 6H3"/><path d="M12 18H3"/></svg><span>Playlists</span></button>
+        <button class="nav-item" data-view="favorites"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg><span>Favorites</span><span class="nav-badge" id="fav-badge">0</span></button>
+        <button class="nav-item" data-view="history"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>History</span></button>
+
+        <div class="menu-label">TOOLS</div>
+        <button class="nav-item" id="btn-sleep-timer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>Sleep Timer</span><span class="nav-badge timer-badge" id="timer-badge" style="display:none">0</span></button>
+        <button class="nav-item" id="btn-equalizer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg><span>Equalizer</span></button>
+        <button class="nav-item" id="btn-speed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg><span>Speed</span><span class="nav-badge speed-badge" id="speed-badge">1x</span></button>
+      </div>
+      <div class="sidebar-footer">
+        <button class="nav-item" id="btn-pip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="10" width="8" height="5" rx="1"/></svg><span>Mini Player</span></button>
+        <button class="nav-item" id="btn-settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-2.82.88V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1.08H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6V3a2 2 0 0 1 4 0v.09c.14.55.55.97 1.08 1.1a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.55.14.97.55 1.1 1.08H21a2 2 0 0 1 0 4h-.09c-.55.14-.97.55-1.1 1.08z"/></svg><span>Settings</span></button>
+      </div>
+    </nav>
+
+    <!-- ===== MAIN ===== -->
+    <main class="main-content" id="main-content">
+      <header class="mobile-header" id="mobile-header">
+        <button class="hamburger" id="btn-hamburger"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+        <span class="mobile-title">PulseStream</span>
+      </header>
+
+      <!-- HOME -->
+      <section class="view active" id="view-home">
+        <div class="view-header"><h1>Good <span id="greeting-time">Evening</span> 🎵</h1><p class="view-sub">Discover, play, and enjoy music</p></div>
+        <div class="section-title"><h2>Quick Play</h2></div>
+        <div class="quick-grid" id="quick-play-grid"></div>
+        <div class="section-title"><h2>Recently Played</h2><button class="link-btn" data-view="history">See All →</button></div>
+        <div class="horizontal-scroll" id="home-recent"></div>
+        <div class="section-title"><h2>Favorites</h2><button class="link-btn" data-view="favorites">See All →</button></div>
+        <div class="horizontal-scroll" id="home-fav"></div>
+      </section>
+
+      <!-- SEARCH -->
+      <section class="view" id="view-search">
+        <div class="view-header"><h1>Search</h1><p class="view-sub">Find any song, artist, or paste a YouTube link</p></div>
+        <div class="search-bar-large">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="search-input" placeholder="Search songs, artists, or paste YouTube URL..." autocomplete="off" spellcheck="false">
+          <button class="search-clear" id="search-clear" style="display:none">✕</button>
+        </div>
+        <div id="search-status" class="search-status"></div>
+        <div class="results-grid" id="search-results"></div>
+      </section>
+
+      <!-- TRENDING -->
+      <section class="view" id="view-trending">
+        <div class="view-header"><h1>Trending Now 🔥</h1><p class="view-sub">Most popular music right now</p></div>
+        <div class="results-grid" id="trending-results"></div>
+        <div class="load-more-wrap"><button class="load-more-btn" id="btn-more-trending" style="display:none">Load More</button></div>
+      </section>
+
+      <!-- GENRES -->
+      <section class="view" id="view-genres">
+        <div class="view-header"><h1>Browse Genres</h1><p class="view-sub">Explore music by mood and genre</p></div>
+        <div class="genre-grid" id="genre-grid"></div>
+        <div class="results-grid" id="genre-results" style="display:none"></div>
+        <button class="back-btn" id="btn-back-genres" style="display:none">← Back to Genres</button>
+      </section>
+
+      <!-- QUEUE -->
+      <section class="view" id="view-queue">
+        <div class="view-header"><h1>Playing Queue</h1><p class="view-sub">Up next</p><button class="danger-btn" id="btn-clear-queue">Clear All</button></div>
+        <div class="track-list-vertical" id="queue-list"></div>
+      </section>
+
+      <!-- PLAYLISTS -->
+      <section class="view" id="view-playlists">
+        <div class="view-header"><h1>Your Playlists</h1><p class="view-sub">Create and manage custom playlists</p>
+          <button class="accent-btn" id="btn-new-playlist">+ New Playlist</button>
+        </div>
+        <div class="playlists-grid" id="playlists-grid"></div>
+        <!-- Playlist detail view -->
+        <div id="playlist-detail" style="display:none">
+          <div class="playlist-detail-header">
+            <button class="back-btn" id="btn-back-playlists">← Back</button>
+            <h2 id="pl-detail-name"></h2>
+            <span class="pl-count" id="pl-detail-count"></span>
+            <button class="danger-btn small" id="btn-delete-playlist">Delete</button>
+          </div>
+          <div class="track-list-vertical" id="pl-detail-tracks"></div>
+        </div>
+      </section>
+
+      <!-- FAVORITES -->
+      <section class="view" id="view-favorites">
+        <div class="view-header"><h1>Favorites ❤️</h1><p class="view-sub">Songs you've loved</p></div>
+        <div class="results-grid" id="favorites-grid"></div>
+      </section>
+
+      <!-- HISTORY -->
+      <section class="view" id="view-history">
+        <div class="view-header"><h1>Recently Played</h1><p class="view-sub">Your listening history</p><button class="danger-btn" id="btn-clear-history">Clear History</button></div>
+        <div class="track-list-vertical" id="history-list"></div>
+      </section>
+    </main>
+
+    <!-- ===== NOW PLAYING BAR ===== -->
+    <footer class="now-playing-bar" id="now-playing-bar">
+      <div class="npb-progress" id="npb-progress">
+        <div class="npb-buffered" id="npb-buffered"></div>
+        <div class="npb-fill" id="npb-fill"></div>
+        <div class="npb-thumb" id="npb-scrub"></div>
+      </div>
+      <div class="npb-track-info">
+        <div class="npb-art-wrap" id="npb-art-wrap">
+          <img id="npb-art" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' fill='%23334155'/%3E%3Ctext x='40' y='45' text-anchor='middle' fill='%2394a3b8' font-size='14'%3E♪%3C/text%3E%3C/svg%3E" alt="">
+          <div class="npb-bars" id="npb-bars"><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="npb-text"><div class="npb-title" id="npb-title">No track selected</div><div class="npb-artist" id="npb-artist">Select a song to play</div></div>
+        <button class="npb-btn" id="btn-fav-cur" title="Favorite"><svg id="fav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></button>
+      </div>
+      <div class="npb-controls">
+        <button class="npb-btn sm" id="btn-shuffle" title="Shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></button>
+        <button class="npb-btn" id="btn-prev"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"/></svg></button>
+        <button class="npb-play-btn" id="btn-pp"><svg class="ic-play" id="ic-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><svg class="ic-pause" id="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
+        <button class="npb-btn" id="btn-next"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"/></svg></button>
+        <button class="npb-btn sm" id="btn-repeat" title="Repeat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+      </div>
+      <div class="npb-right">
+        <span class="npb-time" id="t-cur">0:00</span><span class="npb-sep">/</span><span class="npb-time" id="t-dur">0:00</span>
+        <div class="vol-group">
+          <button class="npb-btn sm" id="btn-mute"><svg id="vol-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+          <input type="range" id="vol-slider" min="0" max="100" value="80" class="vol-slider">
+        </div>
+        <button class="npb-btn sm" id="btn-expand" title="Expand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+      </div>
+    </footer>
+
+    <!-- ===== EXPANDED PLAYER ===== -->
+    <div class="expanded-player" id="exp-player" style="display:none">
+      <button class="ep-close" id="ep-close"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+      <div class="ep-bg" id="ep-bg"></div>
+      <div class="ep-content">
+        <div class="ep-art"><img id="ep-art-img" src="" alt=""><div class="ep-viz" id="ep-viz"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+        <div class="ep-info"><h2 id="ep-title">No track</h2><p id="ep-artist">—</p></div>
+        <div class="ep-timeline"><span id="ep-tc">0:00</span><div class="ep-bar" id="ep-bar"><div class="ep-bar-fill" id="ep-fill"></div></div><span id="ep-td">0:00</span></div>
+        <div class="ep-ctrls">
+          <button class="ep-btn sm" id="ep-shuffle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg></button>
+          <button class="ep-btn" id="ep-prev"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"/></svg></button>
+          <button class="ep-play-btn" id="ep-pp"><svg class="ic-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20"/></svg><svg class="ic-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
+          <button class="ep-btn" id="ep-next"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"/></svg></button>
+          <button class="ep-btn sm" id="ep-repeat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></button>
+        </div>
+        <div class="ep-extras">
+          <button class="ep-pill" id="ep-fav">♡ Favorite</button>
+          <button class="ep-pill" id="ep-add-q">+ Queue</button>
+          <button class="ep-pill" id="ep-add-pl">+ Playlist</button>
+          <button class="ep-pill" id="ep-share">↗ Share</button>
+        </div>
+        <!-- Related Videos -->
+        <div class="ep-related">
+          <h3>Up Next / Related</h3>
+          <div class="ep-related-list" id="ep-related-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden YT Player -->
+    <div id="yt-wrap" style="position:fixed;bottom:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;pointer-events:none;"><div id="yt-player"></div></div>
+  </div>
+
+  <!-- ===== MODALS ===== -->
+  <!-- Settings -->
+  <div class="modal-overlay" id="modal-settings" style="display:none">
+    <div class="modal-box">
+      <div class="modal-top"><h2>⚙ Settings</h2><button class="modal-x" id="mx-settings">✕</button></div>
+      <div class="modal-body">
+        <label>YouTube Data API v3 Key</label>
+        <p class="hint">Required for Search, Trending, and Genres. Free from <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>.</p>
+        <input type="password" id="input-api-key" placeholder="AIzaSy..." class="modal-input">
+        <div class="modal-actions"><button class="btn-sec" id="btn-cancel-set">Cancel</button><button class="btn-pri" id="btn-save-set">Save</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sleep Timer -->
+  <div class="modal-overlay" id="modal-sleep" style="display:none">
+    <div class="modal-box">
+      <div class="modal-top"><h2>🌙 Sleep Timer</h2><button class="modal-x" id="mx-sleep">✕</button></div>
+      <div class="modal-body">
+        <p class="hint">Music will stop after the selected time.</p>
+        <div class="timer-options" id="timer-options">
+          <button class="timer-opt" data-min="15">15 min</button>
+          <button class="timer-opt" data-min="30">30 min</button>
+          <button class="timer-opt" data-min="45">45 min</button>
+          <button class="timer-opt" data-min="60">1 hour</button>
+          <button class="timer-opt" data-min="90">1.5 hours</button>
+          <button class="timer-opt" data-min="120">2 hours</button>
+        </div>
+        <div id="timer-active" style="display:none">
+          <p class="timer-remaining">Stopping in: <strong id="timer-remaining-text">—</strong></p>
+          <button class="danger-btn" id="btn-cancel-timer">Cancel Timer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equalizer -->
+  <div class="modal-overlay" id="modal-eq" style="display:none">
+    <div class="modal-box wide">
+      <div class="modal-top"><h2>🎚 Equalizer</h2><button class="modal-x" id="mx-eq">✕</button></div>
+      <div class="modal-body">
+        <div class="eq-presets">
+          <button class="eq-preset active" data-preset="flat">Flat</button>
+          <button class="eq-preset" data-preset="bass">Bass Boost</button>
+          <button class="eq-preset" data-preset="treble">Treble</button>
+          <button class="eq-preset" data-preset="vocal">Vocal</button>
+          <button class="eq-preset" data-preset="rock">Rock</button>
+          <button class="eq-preset" data-preset="electronic">Electronic</button>
+        </div>
+        <div class="eq-sliders" id="eq-sliders">
+          <div class="eq-band"><label>60Hz</label><input type="range" min="-12" max="12" value="0" data-freq="60" class="eq-slider" orient="vertical"><span class="eq-val">0</span></div>
+          <div class="eq-band"><label>230Hz</label><input type="range" min="-12" max="12" value="0" data-freq="230" class="eq-slider" orient="vertical"><span class="eq-val">0</span></div>
+          <div class="eq-band"><label>910Hz</label><input type="range" min="-12" max="12" value="0" data-freq="910" class="eq-slider" orient="vertical"><span class="eq-val">0</span></div>
+          <div class="eq-band"><label>4kHz</label><input type="range" min="-12" max="12" value="0" data-freq="4000" class="eq-slider" orient="vertical"><span class="eq-val">0</span></div>
+          <div class="eq-band"><label>14kHz</label><input type="range" min="-12" max="12" value="0" data-freq="14000" class="eq-slider" orient="vertical"><span class="eq-val">0</span></div>
+        </div>
+        <p class="hint" style="margin-top:12px;">Note: Equalizer works with compatible browser audio routing. Visual presets are applied.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Speed -->
+  <div class="modal-overlay" id="modal-speed" style="display:none">
+    <div class="modal-box">
+      <div class="modal-top"><h2>⚡ Playback Speed</h2><button class="modal-x" id="mx-speed">✕</button></div>
+      <div class="modal-body">
+        <div class="speed-options" id="speed-options">
+          <button class="speed-opt" data-speed="0.25">0.25x</button>
+          <button class="speed-opt" data-speed="0.5">0.5x</button>
+          <button class="speed-opt" data-speed="0.75">0.75x</button>
+          <button class="speed-opt active" data-speed="1">1x (Normal)</button>
+          <button class="speed-opt" data-speed="1.25">1.25x</button>
+          <button class="speed-opt" data-speed="1.5">1.5x</button>
+          <button class="speed-opt" data-speed="1.75">1.75x</button>
+          <button class="speed-opt" data-speed="2">2x</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Playlist -->
+  <div class="modal-overlay" id="modal-new-pl" style="display:none">
+    <div class="modal-box">
+      <div class="modal-top"><h2>New Playlist</h2><button class="modal-x" id="mx-new-pl">✕</button></div>
+      <div class="modal-body">
+        <label>Playlist Name</label>
+        <input type="text" id="input-pl-name" placeholder="My awesome playlist..." class="modal-input" maxlength="50">
+        <div class="modal-actions"><button class="btn-sec" id="btn-cancel-pl">Cancel</button><button class="btn-pri" id="btn-create-pl">Create</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add to Playlist Picker -->
+  <div class="modal-overlay" id="modal-pick-pl" style="display:none">
+    <div class="modal-box">
+      <div class="modal-top"><h2>Add to Playlist</h2><button class="modal-x" id="mx-pick-pl">✕</button></div>
+      <div class="modal-body">
+        <div id="pick-pl-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toasts"></div>
+  <script src="app.js"></script>
+</body>
+</html>
